@@ -47,9 +47,3 @@ module.exports.loop = function () {
     // Logging
     console.log("Number of gatherers: " + creepCount)
 }
-
-
-
-
-
-
