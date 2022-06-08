@@ -1,20 +1,26 @@
 module.exports.loop = function () {
     console.log("-----------(New Tick)-----------")
     
-    const G_LIMIT = 35
-    const FIGHTER_LIMIT = 15
+    const G_LIMIT = 40
+    const FIGHTER_LIMIT = 5
+    const BUILDER_LIMIT = 1
+    let harvestLimit = G_LIMIT - 10
     let creepCount = Object.keys(Game.creeps).length
     let gathererCount = 0
     let fighterCount = 0
+    let buildercount = 0
     
     // counting creeps of each type
     for (let i in Game.creeps) {
-        let currentCreep = Game.creeps[i]
-        if (currentCreep.body[0].type == 'attack') {
+        let thisCreep = Game.creeps[i]
+        if (thisCreep.body[0].type == 'attack') {
             fighterCount += 1
         }
-        if (currentCreep.body[0].type == 'work') {
+        if (thisCreep.body[0].type == 'work') {
             gathererCount += 1
+        }
+        if (thisCreep.body[0].type == 'carry') {
+            builderCount += 1
         }
     }
     
@@ -22,11 +28,15 @@ module.exports.loop = function () {
     
     // Spawn Creeps
     if( (Game.spawns['FirstAttempt'].store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (gathererCount < G_LIMIT) ) {
-        let creepName = 'WWCM-' + nameRng
+        let creepName = 'Gatherer-' + nameRng
         Game.spawns['FirstAttempt'].spawnCreep( [WORK, WORK, CARRY, MOVE], creepName )
         console.log('New gatherer: ' + creepName)
-    } else if( (Game.spawns['FirstAttempt'].store.getUsedCapacity(RESOURCE_ENERGY) >= 270) && (fighterCount < FIGHTER_LIMIT) ) {
-        let creepName = 'AAMMT-' + nameRng
+    } else if( (Game.spawns['FirstAttempt'].store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (builderCount < BUILDER_LIMIT) ) {
+        let creepName = 'Builder-' + nameRng
+        Game.spawns['FirstAttempt'].spawnCreep( [CARRY, CARRY, WORK, MOVE, MOVE], creepName )
+        console.log('New builder: ' + creepName)
+    } else if( (Game.spawns['FirstAttempt'].store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (fighterCount < FIGHTER_LIMIT) ) {
+        let creepName = 'Fighter-' + nameRng
         Game.spawns['FirstAttempt'].spawnCreep( [ATTACK, ATTACK, MOVE, MOVE, TOUGH], creepName )
         console.log('New fighter: ' + creepName)
     }
@@ -38,6 +48,11 @@ module.exports.loop = function () {
         // Handle Fighters
         if ( currentCreep.body[0].type == 'attack' ) {
             currentCreep.moveTo(42, 4)
+        }
+        
+        // Handle Builders
+        if ( currentCreep.body[0].type == 'carry') {
+            currentCreep.moveTo(27, 3)
         }
     
         // Handle Gatherers
@@ -53,8 +68,8 @@ module.exports.loop = function () {
                 currentCreep.moveTo(target)
             }
             
-            // Upgrade controller when at the chosen creep limit
-            if( (creepCount >= G_LIMIT) && (currentCreep.store[RESOURCE_ENERGY] >= 0) ){
+            // Upgrade controller instead when at the chosen gatherer count (harvestLimit)
+            if( (gathererCount >= harvestLimit) && (currentCreep.store[RESOURCE_ENERGY] >= 0) ){
                 let target = currentCreep.room.controller
                 if(currentCreep.pos.getRangeTo(target) <= 3) {
                      currentCreep.upgradeController(target)
@@ -76,9 +91,3 @@ module.exports.loop = function () {
     console.log('Fighters: ' + fighterCount)
     console.log("Total creeps: " + creepCount)
 }
-
-
-
-
-
-
