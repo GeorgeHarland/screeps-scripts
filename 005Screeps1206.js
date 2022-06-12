@@ -1,7 +1,7 @@
 module.exports.loop = function () {
     console.log("-----------(New Tick)-----------")
     
-    const G_LIMIT = 12
+    const G_LIMIT = 11
     const FIGHTER_LIMIT = 1 
     const BUILDER_LIMIT = 2
     const CREEP_LIMIT = G_LIMIT + FIGHTER_LIMIT + BUILDER_LIMIT
@@ -10,8 +10,10 @@ module.exports.loop = function () {
     let fighterCount = 0
     let builderCount = 0
     
+    let coreSpawn = Game.spawns['Karma2']
+    
     // buildings
-    const extensions = Game.spawns['Karma2'].room.find(FIND_MY_STRUCTURES, {
+    const extensions = coreSpawn.room.find(FIND_MY_STRUCTURES, {
         filter: { structureType: STRUCTURE_EXTENSION }
     });
     
@@ -30,36 +32,40 @@ module.exports.loop = function () {
     }
     
     let nameRng = Math.floor(Math.random() * 100001)
+    console.log('Energy avaliable: ' + Game.rooms['E5S39'].energyAvailable)
     
     // Spawn Creeps
-    console.log('Energy avaliable: ' + Game.rooms['E5S39'].energyAvailable)
-    // if energyAvaliable = 400 ->
-    // energyStructures array to draw energy from
-    // build bigger version of whatever (maybe just add move to anything? and create component lists here)
-    if( (Game.spawns['Karma2'].store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (gathererCount < G_LIMIT) ) {
-        let creepName = 'Gatherer-' + nameRng
-        Game.spawns['Karma2'].spawnCreep( [WORK, WORK, CARRY, MOVE], creepName )
-        console.log('New gatherer: ' + creepName)
-    } else if( (Game.spawns['Karma2'].store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (builderCount < BUILDER_LIMIT) ) {
-        let creepName = 'Builder-' + nameRng
-        Game.spawns['Karma2'].spawnCreep( [CARRY, CARRY, WORK, MOVE, MOVE], creepName )
-        console.log('New builder: ' + creepName)
-    } else if( (Game.spawns['Karma2'].store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (fighterCount < FIGHTER_LIMIT) ) {
-        let creepName = 'Fighter-' + nameRng
-        Game.spawns['Karma2'].spawnCreep( [ATTACK, ATTACK, MOVE, MOVE, TOUGH], creepName )
-        console.log('New fighter: ' + creepName)
+    // If 400 energy, creates a super over any other creep
+    if (Game.rooms['E5S39'].energyAvailable >= 400 && CREEP_LIMIT > creepCount) {
+        let creepName = 'Super-' + nameRng
+        coreSpawn.spawnCreep( [WORK, WORK, CARRY, CARRY, CARRY, MOVE], creepName )
+        console.log('New super: ' + creepName)
+    } else {
+        if( (coreSpawn.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (gathererCount < G_LIMIT) ) {
+            let creepName = 'Gatherer-' + nameRng
+            coreSpawn.spawnCreep( [WORK, WORK, CARRY, MOVE], creepName )
+            console.log('New gatherer: ' + creepName)
+        } else if( (coreSpawn.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (builderCount < BUILDER_LIMIT) ) {
+            let creepName = 'Builder-' + nameRng
+            coreSpawn.spawnCreep( [CARRY, CARRY, WORK, MOVE, MOVE], creepName )
+            console.log('New builder: ' + creepName)
+        } else if( (coreSpawn.store.getUsedCapacity(RESOURCE_ENERGY) >= 300) && (fighterCount < FIGHTER_LIMIT) ) {
+            let creepName = 'Fighter-' + nameRng
+            coreSpawn.spawnCreep( [ATTACK, ATTACK, MOVE, MOVE, TOUGH], creepName )
+            console.log('New fighter: ' + creepName)
+        }
     }
-    
+        
     // construction sites
     // create 2 spaces above spawn 
-    let conNorthX = Game.spawns['Karma2'].pos.x
-    let conNorthY = Game.spawns['Karma2'].pos.y - 2
+    let conNorthX = coreSpawn.pos.x
+    let conNorthY = coreSpawn.pos.y - 2
     // create 2 spaces right of spawn
-    let conEastX = Game.spawns['Karma2'].pos.x + 2
-    let conEastY = Game.spawns['Karma2'].pos.y
+    let conEastX = coreSpawn.pos.x + 2
+    let conEastY = coreSpawn.pos.y
     // create 2 spaces south of spawn
-    let conSouthX = Game.spawns['Karma2'].pos.x
-    let conSouthY = Game.spawns['Karma2'].pos.y + 2
+    let conSouthX = coreSpawn.pos.x
+    let conSouthY = coreSpawn.pos.y + 2
     // build sites
     Game.rooms.E5S39.createConstructionSite(conNorthX, conNorthY, STRUCTURE_EXTENSION)
     Game.rooms.E5S39.createConstructionSite(conEastX, conEastY, STRUCTURE_EXTENSION)
