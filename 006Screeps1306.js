@@ -1,7 +1,7 @@
 module.exports.loop = function () {
     console.log("-----------(New Tick)-----------")
     
-    const G_LIMIT = 11
+    const G_LIMIT = 10
     const FIGHTER_LIMIT = 1 
     const BUILDER_LIMIT = 3
     const CREEP_LIMIT = G_LIMIT + FIGHTER_LIMIT + BUILDER_LIMIT
@@ -43,7 +43,12 @@ module.exports.loop = function () {
     let fiComp = [ATTACK, ATTACK, MOVE, MOVE, TOUGH]
     
     // Change creep components based on energy avaliable
-    if (coreRoom.energyAvailable >= 500 && CREEP_LIMIT > creepCount) {
+    if (coreRoom.energyAvailable >= 600 && CREEP_LIMIT > creepCount) {
+        creepName = '600-'
+        gaComp = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
+        buComp = [CARRY, CARRY, CARRY, CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE]
+        fiComp = [ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, MOVE, MOVE, MOVE, TOUGH]
+    } else if (coreRoom.energyAvailable >= 500 && CREEP_LIMIT > creepCount) {
         creepName = '500-'
         gaComp = [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
         buComp = [CARRY, CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE]
@@ -75,18 +80,11 @@ module.exports.loop = function () {
     conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
     conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
     conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
     conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+    conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
     conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
-    // roads
-    conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 1, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y - 2, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y - 1, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y + 1, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y + 2, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
     
     // Creep Loop
     for(let i in Game.creeps) {
@@ -110,6 +108,18 @@ module.exports.loop = function () {
             
             currentCreep.moveTo(22, 10, { reusePath: 15 })
             
+            // if doing nothing, atleast dump energy into extensions
+            for(let i in extensions) {
+                if (extensions[i].store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                    if ( currentCreep.store[RESOURCE_ENERGY] == currentCreep.store.getCapacity(RESOURCE_ENERGY) ) {
+                        currentCreep.moveTo(extensions[i], { reusePath: 15 })
+                    }
+                    if ( (currentCreep.pos.getRangeTo(extensions[i]) == 1) && (currentCreep.store[RESOURCE_ENERGY] > 0) ) {
+                        currentCreep.transfer(extensions[i], RESOURCE_ENERGY)
+                    }
+                }
+            }
+            
             // if energy under limit, harvest energy
             if(currentCreep.store[RESOURCE_ENERGY] < currentCreep.store.getCapacity()) {
                 let target = currentCreep.pos.findClosestByPath(FIND_SOURCES)
@@ -118,7 +128,7 @@ module.exports.loop = function () {
             }
             
             let target = currentCreep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES)
-            
+
             // if energy at capacity, moves to construction site
             if( (currentCreep.store[RESOURCE_ENERGY] == currentCreep.store.getCapacity()) && ((currentCreep.pos.getRangeTo(target) > 3)) ) {
                 currentCreep.moveTo(target, { reusePath: 15 })
