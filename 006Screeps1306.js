@@ -3,7 +3,7 @@ module.exports.loop = function () {
     
     const G_LIMIT = 11
     const FIGHTER_LIMIT = 1 
-    const BUILDER_LIMIT = 2
+    const BUILDER_LIMIT = 3
     const CREEP_LIMIT = G_LIMIT + FIGHTER_LIMIT + BUILDER_LIMIT
     let creepCount = Object.keys(Game.creeps).length
     let gathererCount = 0
@@ -70,24 +70,23 @@ module.exports.loop = function () {
         console.log('New fighter: ' + creepName)
     }
         
-    // construction sites
-    // create 2 spaces north of spawn 
-    let conNorthX = coreSpawn.pos.x
-    let conNorthY = coreSpawn.pos.y - 2
-    // create 2 spaces east of spawn
-    let conEastX = coreSpawn.pos.x + 2
-    let conEastY = coreSpawn.pos.y
-    // create 2 spaces south of spawn
-    let conSouthX = coreSpawn.pos.x
-    let conSouthY = coreSpawn.pos.y + 2
-    // create 2 spaces west of spawn
-    let conWestX = coreSpawn.pos.x - 2
-    let conWestY = coreSpawn.pos.y
-    // build sites
-    conRoom.createConstructionSite(conNorthX, conNorthY, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(conEastX, conEastY, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(conSouthX, conSouthY, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(conWestX, conWestY, STRUCTURE_EXTENSION)
+    // build construction sites
+    // extensions
+    conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
+    conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+    conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
+    // roads
+    conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 1, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y - 3, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y - 2, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y - 1, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y + 1, STRUCTURE_ROAD)
+    conRoom.createConstructionSite(coreSpawn.pos.x + 3, coreSpawn.pos.y + 2, STRUCTURE_ROAD)
     
     // Creep Loop
     for(let i in Game.creeps) {
