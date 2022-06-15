@@ -1,11 +1,10 @@
 // set up functions & classes
-// - pass list of positions -> builds structure of type in each position
 
 module.exports.loop = function () {
     console.log("-----------(New Tick)-----------")
     
     const G_LIMIT = 11
-    const FIGHTER_LIMIT = 1 
+    const FIGHTER_LIMIT = 2
     const BUILDER_LIMIT = 2
     const CREEP_LIMIT = G_LIMIT + FIGHTER_LIMIT + BUILDER_LIMIT
     let creepCount = Object.keys(Game.creeps).length
@@ -86,37 +85,45 @@ module.exports.loop = function () {
     }
         
     // build construction sites
-    // extensions
-    conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
-    // roads by spawn
-    conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y + 2, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y + 1, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y - 1, STRUCTURE_ROAD)
-    conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y - 2, STRUCTURE_ROAD)
-    // roads by sources
-    for(let i of coreRoom.find(FIND_SOURCES)) {
-        terr = coreRoom.getTerrain()
-        
-        if (terr.get(i.pos.x, i.pos.y - 1) == TERRAIN_MASK_WALL) {
-            conRoom.createConstructionSite((i.pos.x, i.pos.y - 1), STRUCTURE_ROAD)
+    const POTENTIAL_BUILDINGS = 15
+    for(let i = 0; i<POTENTIAL_BUILDINGS; i++) {
+        // if con site already exists, break out of loop
+        if(FIND_CONSTRUCTION_SITES) {
+            console.log('con site exists')
+            break;
         }
-        // if (terr.get(i.pos.x + 1, i.pos.y) == TERRAIN_MASK_WALL) {
-        //     conRoom.createConstructionSite((i.pos.x + 1, i.pos.y), STRUCTURE_ROAD)
-        // }
-        // if (terr.get(i.pos.x, i.pos.y + 1) == TERRAIN_MASK_WALL) {
-        //     conRoom.createConstructionSite((i.pos.x, i.pos.y + 1), STRUCTURE_ROAD)
-        // }
-        // if (terr.get(i.pos.x - 1, i.pos.y) == TERRAIN_MASK_WALL) {
-        //     conRoom.createConstructionSite((i.pos.x - 1, i.pos.y), STRUCTURE_ROAD)
-        // }
+        // extensions (8)
+        conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+        // roads by spawn (5)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y + 2, STRUCTURE_ROAD)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y + 1, STRUCTURE_ROAD)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y, STRUCTURE_ROAD)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y - 1, STRUCTURE_ROAD)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y - 2, STRUCTURE_ROAD)
+        // roads by sources (2)
+        for(let i of coreRoom.find(FIND_SOURCES)) {
+            terr = coreRoom.getTerrain()
+            
+            if (terr.get(i.pos.x, i.pos.y - 1) == TERRAIN_MASK_WALL) {
+                conRoom.createConstructionSite((i.pos.x, i.pos.y - 1), STRUCTURE_ROAD)
+            }
+            // if (terr.get(i.pos.x + 1, i.pos.y) == TERRAIN_MASK_WALL) {
+            //     conRoom.createConstructionSite((i.pos.x + 1, i.pos.y), STRUCTURE_ROAD)
+            // }
+            // if (terr.get(i.pos.x, i.pos.y + 1) == TERRAIN_MASK_WALL) {
+            //     conRoom.createConstructionSite((i.pos.x, i.pos.y + 1), STRUCTURE_ROAD)
+            // }
+            // if (terr.get(i.pos.x - 1, i.pos.y) == TERRAIN_MASK_WALL) {
+            //     conRoom.createConstructionSite((i.pos.x - 1, i.pos.y), STRUCTURE_ROAD)
+            // }
+        }
     }
     
     // Creep Loop
