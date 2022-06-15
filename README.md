@@ -4,3 +4,5 @@ Screeps is a game where you automate units and base building using a JavaScript 
 You compete against many other players for resources.
 
 My code is fairly basic right now. I'm avoiding tutorials and guides until I've explored most of the game mechanics myself.
+
+The code is messy while I race to a decent base generation setup. After that, I'll refactor properly.
