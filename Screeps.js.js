@@ -3,9 +3,9 @@
 module.exports.loop = function () {
     console.log("-----------(New Tick)-----------")
     
-    const G_LIMIT = 11
-    const FIGHTER_LIMIT = 2
-    const BUILDER_LIMIT = 2
+    const G_LIMIT = 9
+    const FIGHTER_LIMIT = 1
+    const BUILDER_LIMIT = 3
     const CREEP_LIMIT = G_LIMIT + FIGHTER_LIMIT + BUILDER_LIMIT
     let creepCount = Object.keys(Game.creeps).length
     let gathererCount = 0
@@ -95,6 +95,7 @@ module.exports.loop = function () {
         }
         // extensions (8)
         conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x + 1, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
@@ -102,6 +103,7 @@ module.exports.loop = function () {
         conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 1, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
         // roads by spawn (5)
         conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y + 2, STRUCTURE_ROAD)
         conRoom.createConstructionSite(coreSpawn.pos.x - 3, coreSpawn.pos.y + 1, STRUCTURE_ROAD)
