@@ -1,11 +1,9 @@
-// set up functions & classes
-
 module.exports.loop = function () {
     console.log("-----------(New Tick)-----------")
     
-    const G_LIMIT = 9
+    const G_LIMIT = 7
     const FIGHTER_LIMIT = 1
-    const BUILDER_LIMIT = 3
+    const BUILDER_LIMIT = 2
     const CREEP_LIMIT = G_LIMIT + FIGHTER_LIMIT + BUILDER_LIMIT
     let creepCount = Object.keys(Game.creeps).length
     let gathererCount = 0
@@ -99,7 +97,9 @@ module.exports.loop = function () {
         conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x + 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x + 1, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
+        conRoom.createConstructionSite(coreSpawn.pos.x - 1, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y + 2, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y, STRUCTURE_EXTENSION)
         conRoom.createConstructionSite(coreSpawn.pos.x - 2, coreSpawn.pos.y - 2, STRUCTURE_EXTENSION)
@@ -124,17 +124,6 @@ module.exports.loop = function () {
                     break
                 }
             }
-
-
-            // if (terr.get(i.pos.x + 1, i.pos.y) == TERRAIN_MASK_WALL) {
-            //     conRoom.createConstructionSite((i.pos.x + 1, i.pos.y), STRUCTURE_ROAD)
-            // }
-            // if (terr.get(i.pos.x, i.pos.y + 1) == TERRAIN_MASK_WALL) {
-            //     conRoom.createConstructionSite((i.pos.x, i.pos.y + 1), STRUCTURE_ROAD)
-            // }
-            // if (terr.get(i.pos.x - 1, i.pos.y) == TERRAIN_MASK_WALL) {
-            //     conRoom.createConstructionSite((i.pos.x - 1, i.pos.y), STRUCTURE_ROAD)
-            // }
         }
     }
     
@@ -144,7 +133,7 @@ module.exports.loop = function () {
         
         // Handle Fighters
         if ( currentCreep.body[0].type == 'attack' ) {
-            currentCreep.moveTo(30, 1, { reusePath: 15 })
+            currentCreep.moveTo(28, 1, { reusePath: 15 })
             
             let target = currentCreep.pos.findClosestByPath(FIND_HOSTILE_CREEPS)
             if(currentCreep.pos.getRangeTo(target) <= 1) {
@@ -157,6 +146,8 @@ module.exports.loop = function () {
         
         // Handle Gatherers and builders
         if ( (currentCreep.body[0].type == 'work') || (currentCreep.body[0].type == 'carry') ) {
+            
+            // START
             
             // Go to harvest energy or return to spawn
             if(currentCreep.store[RESOURCE_ENERGY] < currentCreep.store.getCapacity()) {
@@ -178,6 +169,8 @@ module.exports.loop = function () {
                 }
             }
             
+            // END
+            
             // Transfer to spawn
             let target = currentCreep.pos.findClosestByPath(FIND_MY_SPAWNS)
             if( (currentCreep.pos.getRangeTo(target) == 1) && (currentCreep.store[RESOURCE_ENERGY] > 0) ){
@@ -194,7 +187,7 @@ module.exports.loop = function () {
                     }
                 }
             }
-            
+
             // Handle Builders
             if ( currentCreep.body[0].type == 'carry') {
                 let target = currentCreep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES)
